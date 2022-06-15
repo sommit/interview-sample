@@ -9,34 +9,26 @@ class AlertTypeEnum
     public const STOCK = 'stock';
 }
 
-
-class Log {
-    private User $user;
-
-    // ...
-
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    // ...
-}
-
 class Sample {
-    public function logLogin(AuthenticationSuccessEvent $event)
+    public function persistUserData(array $usersData): void
     {
-        $userGlobal = $event->getUser();
-        $user = $this->em->getRepository('AppBundle:User\User')->findOneBy(['username' => $userGlobal->getUsername()]);
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
 
-        $log = new Log();
-        $log->setUser($user);
+        // Only create user if not exists
+        foreach ($usersData as $referenceKey => $userData) {
+            $user = $userRepository->findOneBy(['email' => $userData['email']]);
 
-        $user->setLastLogin(new DateTime());
+            $user->setEmail($userData['email'])
+                ->setUsername($userData['username'])
+                ->setPassword($userData['password'])
+                ->setFirstname('Test')
+                ->setLastname('Test')
+                ->setGuid('1');
 
-        $this->em->persist($log);
-        $this->em->merge($user);
-        $this->em->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
     }
 
     /* Some special constants */
@@ -44,7 +36,6 @@ class Sample {
     const UPDATED = 1 << 0;
     const IN_ORDER = 1 << 1;
     const HAS_STOCK = 1 << 2;
-
 
 
     public function getAlerts($configuration, $structure)

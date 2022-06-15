@@ -18,6 +18,6 @@ The `Sample` class has 3 functions to be analysed:
 
 ### Questions
 The `Sample` class has 3 parts to be analysed:
-- function logLogin: this function has a potential error, find it
+- function persistUserData: this function has a potential error and some code smell, find it
 - constants: what are those? "wait, what the actual f?" is a good answer (bonus point if there's an explanation as to why it shouldn't be used)
 - function getAlerts: oops an error occurred, find it!
